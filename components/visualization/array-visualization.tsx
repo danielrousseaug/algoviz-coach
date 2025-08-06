@@ -24,9 +24,11 @@ export default function ArrayVisualization({ step, width = 600, height = 200 }: 
     };
   }, [step]);
 
-  const elementWidth = Math.min(60, (width - 40) / Math.max(elements.length, 1));
+  const padding = 40;
+  const elementWidth = Math.min(60, (width - padding * 2) / Math.max(elements.length, 1));
   const elementHeight = 40;
-  const startX = (width - (elements.length * elementWidth)) / 2;
+  const totalWidth = elements.length * elementWidth;
+  const startX = (width - totalWidth) / 2;
   const elementY = (height - elementHeight) / 2;
 
   // If no elements, show debug info
@@ -42,8 +44,14 @@ export default function ArrayVisualization({ step, width = 600, height = 200 }: 
   }
 
   return (
-    <div className="relative bg-gray-50 rounded-lg p-4">
-      <svg width={width} height={height} className="mx-auto">
+    <div className="relative bg-gray-50 rounded-lg p-6">
+      <div className="flex justify-center">
+        <svg 
+          width={width} 
+          height={height} 
+          viewBox={`0 0 ${width} ${height}`}
+          className="border border-gray-200 rounded bg-white"
+        >
         {elements.map((element: unknown, index: number) => {
           const x = startX + index * elementWidth;
           const isHighlighted = highlights.includes(index.toString()) || highlights.includes(String(element));
@@ -66,14 +74,16 @@ export default function ArrayVisualization({ step, width = 600, height = 200 }: 
                 textAnchor="middle"
                 dy="0.35em"
                 className={`text-sm font-medium ${isHighlighted ? 'text-white' : 'text-gray-800'}`}
+                fill="currentColor"
               >
                 {String(element)}
               </text>
               <text
                 x={x + elementWidth / 2}
-                y={elementY + elementHeight + 15}
+                y={elementY + elementHeight + 18}
                 textAnchor="middle"
                 className="text-xs text-gray-500"
+                fill="currentColor"
               >
                 {index}
               </text>
@@ -93,7 +103,8 @@ export default function ArrayVisualization({ step, width = 600, height = 200 }: 
             </text>
           </g>
         ))}
-      </svg>
+        </svg>
+      </div>
     </div>
   );
 }

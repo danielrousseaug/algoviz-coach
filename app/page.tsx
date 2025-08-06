@@ -1,15 +1,40 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useAppStore } from '@/lib/store/app-store';
 import ProblemInput from '@/components/ui/problem-input';
 import SolutionDisplay from '@/components/ui/solution-display';
 import ChatInterface from '@/components/chat/chat-interface';
+import LoadingSolution from '@/components/ui/loading-solution';
+import ApiKeyModal from '@/components/ui/api-key-modal';
+import { maskApiKey, getApiKey } from '@/lib/utils/api-key';
 
 export default function Home() {
-  const { problem, solution, error, reset } = useAppStore();
+  const { 
+    problem, 
+    solution, 
+    error, 
+    reset, 
+    isLoading,
+    hasValidApiKey,
+    isApiKeyModalOpen,
+    checkApiKey,
+    setApiKeyModalOpen
+  } = useAppStore();
+
+  useEffect(() => {
+    // Check API key status on app load
+    checkApiKey();
+  }, [checkApiKey]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <>
+      <LoadingSolution isVisible={isLoading} />
+      <ApiKeyModal 
+        isOpen={isApiKeyModalOpen} 
+        onClose={() => setApiKeyModalOpen(false)} 
+      />
+      <div className="min-h-screen bg-gray-100">
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -19,14 +44,42 @@ export default function Home() {
                 Interactive Algorithm Learning Platform
               </p>
             </div>
-            {(problem || solution) && (
-              <button
-                onClick={reset}
-                className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
-              >
-                New Problem
-              </button>
-            )}
+            <div className="flex items-center space-x-3">
+              {/* API Key Status */}
+              <div className="flex items-center space-x-2">
+                {hasValidApiKey ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-600 hidden sm:inline">
+                      {maskApiKey(getApiKey() || '')}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <span className="text-sm text-gray-600 hidden sm:inline">No API Key</span>
+                  </div>
+                )}
+                <button
+                  onClick={() => setApiKeyModalOpen(true)}
+                  className="p-1 text-gray-500 hover:text-gray-700 rounded-md transition-colors"
+                  title="Manage API Key"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+
+              {(problem || solution) && (
+                <button
+                  onClick={reset}
+                  className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors font-medium"
+                >
+                  New Problem
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -82,6 +135,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useAppStore } from '@/lib/store/app-store';
 import VisualizationRenderer from '../visualization/visualization-renderer';
 import VisualizationControls from '../visualization/visualization-controls';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 export default function SolutionDisplay() {
   const [activeTab, setActiveTab] = useState<'explanation' | 'code' | 'visualization'>('explanation');
@@ -104,20 +106,34 @@ export default function SolutionDisplay() {
                   Copy Code
                 </button>
               </div>
-              <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
-                <pre className="text-sm text-gray-100">
-                  <code>{solution.code}</code>
-                </pre>
+              <div className="rounded-lg overflow-hidden">
+                <SyntaxHighlighter
+                  language={solution.language === 'cpp' ? 'cpp' : solution.language === 'csharp' ? 'csharp' : solution.language}
+                  style={vscDarkPlus}
+                  customStyle={{
+                    margin: 0,
+                    borderRadius: '0.5rem',
+                    fontSize: '14px',
+                  }}
+                  showLineNumbers
+                >
+                  {solution.code}
+                </SyntaxHighlighter>
               </div>
             </div>
           )}
 
           {activeTab === 'visualization' && (
-            <div className="space-y-6">
-              <div>
-                <h4 className="font-semibold text-gray-800 mb-4">
-                  Step {currentVisualizationStep + 1}: {currentStep?.description || 'No description available'}
+            <div className="space-y-4">
+              <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-md">
+                <h4 className="font-medium text-blue-800 text-sm">
+                  Step {currentVisualizationStep + 1}
                 </h4>
+                <p className="text-blue-700 mt-1">
+                  {currentStep?.description || 'No description available'}
+                </p>
+              </div>
+              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 {currentStep ? (
                   <VisualizationRenderer 
                     step={currentStep} 
@@ -125,7 +141,7 @@ export default function SolutionDisplay() {
                     height={400}
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-64 bg-gray-100 rounded-lg">
+                  <div className="flex items-center justify-center h-64 bg-gray-100">
                     <div className="text-gray-500">No visualization step available</div>
                   </div>
                 )}

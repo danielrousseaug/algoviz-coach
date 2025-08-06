@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import type { Problem, AlgorithmSolution, ChatMessage } from '../schemas/visualization';
+import { getApiKey, hasApiKey, getApiKeyValid } from '../utils/api-key';
 
 interface AppState {
   problem: Problem | null;
@@ -8,6 +9,11 @@ interface AppState {
   chatMessages: ChatMessage[];
   isLoading: boolean;
   error: string | null;
+  selectedLanguage: string;
+  
+  // API Key management
+  hasValidApiKey: boolean;
+  isApiKeyModalOpen: boolean;
   
   currentVisualizationStep: number;
   isVisualizationPlaying: boolean;
@@ -19,6 +25,12 @@ interface AppState {
   clearChat: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  setSelectedLanguage: (language: string) => void;
+  
+  // API Key actions
+  checkApiKey: () => void;
+  setHasValidApiKey: (valid: boolean) => void;
+  setApiKeyModalOpen: (open: boolean) => void;
   
   setCurrentVisualizationStep: (step: number) => void;
   setVisualizationPlaying: (playing: boolean) => void;
@@ -36,6 +48,9 @@ const initialState = {
   chatMessages: [],
   isLoading: false,
   error: null,
+  selectedLanguage: 'python',
+  hasValidApiKey: false,
+  isApiKeyModalOpen: false,
   currentVisualizationStep: 0,
   isVisualizationPlaying: false,
   visualizationSpeed: 1000,
@@ -63,7 +78,22 @@ export const useAppStore = create<AppState>()(
         
         setLoading: (isLoading) => set({ isLoading }),
         
-        setError: (error) => set({ error, isLoading: false }),
+        setError: (error) => set({ error }),
+        
+        setSelectedLanguage: (selectedLanguage) => set({ selectedLanguage }),
+        
+        checkApiKey: () => {
+          const hasKey = hasApiKey();
+          const isValid = hasKey && getApiKeyValid();
+          set({ 
+            hasValidApiKey: isValid,
+            isApiKeyModalOpen: !hasKey // Open modal if no API key
+          });
+        },
+        
+        setHasValidApiKey: (hasValidApiKey) => set({ hasValidApiKey }),
+        
+        setApiKeyModalOpen: (isApiKeyModalOpen) => set({ isApiKeyModalOpen }),
         
         setCurrentVisualizationStep: (step) => {
           const state = get();
@@ -106,6 +136,7 @@ export const useAppStore = create<AppState>()(
           problem: state.problem,
           solution: state.solution,
           chatMessages: state.chatMessages,
+          selectedLanguage: state.selectedLanguage,
           visualizationSpeed: state.visualizationSpeed,
         }),
       }

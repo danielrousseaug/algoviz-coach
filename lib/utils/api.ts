@@ -1,4 +1,5 @@
 import type { Problem, AlgorithmSolution, ChatMessage } from '../schemas/visualization';
+import { getApiKey } from './api-key';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -7,13 +8,18 @@ interface ApiResponse<T> {
   details?: unknown;
 }
 
-export async function generateAlgorithm(problem: Problem): Promise<AlgorithmSolution> {
+export async function generateAlgorithm(problem: Problem, language: string = 'python'): Promise<AlgorithmSolution> {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    throw new Error('OpenAI API key is required. Please add your API key in settings.');
+  }
+
   const response = await fetch('/api/algorithm/generate', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(problem),
+    body: JSON.stringify({ ...problem, language, apiKey }),
   });
 
   const result: ApiResponse<AlgorithmSolution> = await response.json();
@@ -31,6 +37,11 @@ export async function sendChatMessage(
   solution: AlgorithmSolution,
   chatHistory: ChatMessage[]
 ): Promise<string> {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    throw new Error('OpenAI API key is required. Please add your API key in settings.');
+  }
+
   const response = await fetch('/api/chat', {
     method: 'POST',
     headers: {
@@ -41,6 +52,7 @@ export async function sendChatMessage(
       problem,
       solution,
       chatHistory,
+      apiKey,
     }),
   });
 

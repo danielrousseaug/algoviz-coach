@@ -1,17 +1,13 @@
 import OpenAI from 'openai';
 import { AlgorithmSolutionSchema, type AlgorithmSolution, type Problem } from '../schemas/visualization';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-const ALGORITHM_GENERATION_PROMPT = `You are an expert algorithm educator and visualization designer. Given a programming problem, you must provide a comprehensive solution with detailed visualization instructions.
+const ALGORITHM_GENERATION_PROMPT = (language: string) => `You are an expert algorithm educator and visualization designer. Given a programming problem, you must provide a comprehensive solution with detailed visualization instructions.
 
 Your response must be valid JSON matching this exact structure:
 {
   "explanation": "Step-by-step algorithmic explanation in plain English",
-  "code": "Python implementation with clear comments",
-  "language": "python",
+  "code": "${language} implementation with clear comments",
+  "language": "${language}",
   "visualizationPlan": {
     "title": "Algorithm name",
     "description": "Brief description of what the algorithm does",
@@ -103,14 +99,22 @@ User Question: {question}
 
 Provide a helpful, accurate response that addresses their specific question while maintaining the educational context.`;
 
-export async function generateAlgorithmSolution(problem: Problem): Promise<AlgorithmSolution> {
+export async function generateAlgorithmSolution(problem: Problem, language: string = 'python', apiKey: string): Promise<AlgorithmSolution> {
+  if (!apiKey) {
+    throw new Error('OpenAI API key is required');
+  }
+
+  const openai = new OpenAI({
+    apiKey: apiKey,
+  });
+
   try {
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
         {
           role: 'system',
-          content: ALGORITHM_GENERATION_PROMPT,
+          content: ALGORITHM_GENERATION_PROMPT(language),
         },
         {
           role: 'user',
@@ -178,8 +182,17 @@ export async function generateChatResponse(
   question: string,
   problem: Problem,
   solution: AlgorithmSolution,
-  chatHistory: Array<{ role: string; content: string }> = []
+  chatHistory: Array<{ role: string; content: string }> = [],
+  apiKey: string
 ): Promise<string> {
+  if (!apiKey) {
+    throw new Error('OpenAI API key is required');
+  }
+
+  const openai = new OpenAI({
+    apiKey: apiKey,
+  });
+
   try {
     const formattedHistory = chatHistory.slice(-6).map(msg => `${msg.role}: ${msg.content}`).join('\n');
     

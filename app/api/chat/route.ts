@@ -8,19 +8,21 @@ const ChatRequestSchema = z.object({
   problem: ProblemSchema,
   solution: AlgorithmSolutionSchema,
   chatHistory: z.array(ChatMessageSchema).optional().default([]),
+  apiKey: z.string().min(1),
 });
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    const { question, problem, solution, chatHistory } = ChatRequestSchema.parse(body);
+    const { question, problem, solution, chatHistory, apiKey } = ChatRequestSchema.parse(body);
     
     const response = await generateChatResponse(
       question,
       problem,
       solution,
-      chatHistory.map(msg => ({ role: msg.role, content: msg.content }))
+      chatHistory.map(msg => ({ role: msg.role, content: msg.content })),
+      apiKey
     );
     
     return NextResponse.json({

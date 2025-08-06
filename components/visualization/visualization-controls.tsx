@@ -61,7 +61,7 @@ export default function VisualizationControls() {
         <button
           onClick={() => handleStepChange(currentVisualizationStep - 1)}
           disabled={currentVisualizationStep === 0}
-          className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-2 rounded-md bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700"
           title="Previous step"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,7 +88,7 @@ export default function VisualizationControls() {
         <button
           onClick={() => handleStepChange(currentVisualizationStep + 1)}
           disabled={currentVisualizationStep >= totalSteps - 1}
-          className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-2 rounded-md bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700"
           title="Next step"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,7 +98,7 @@ export default function VisualizationControls() {
 
         <button
           onClick={handleReset}
-          className="p-2 rounded-md bg-gray-100 hover:bg-gray-200"
+          className="p-2 rounded-md bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700"
           title="Reset to beginning"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,22 +148,22 @@ export default function VisualizationControls() {
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-2 text-xs text-gray-500">
+      <div className="grid grid-cols-3 gap-2 text-xs">
         <button
           onClick={() => handleSpeedChange(500)}
-          className="p-1 rounded bg-gray-100 hover:bg-gray-200"
+          className="p-2 rounded bg-white border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 font-medium"
         >
           Fast (500ms)
         </button>
         <button
           onClick={() => handleSpeedChange(1000)}
-          className="p-1 rounded bg-gray-100 hover:bg-gray-200"
+          className="p-2 rounded bg-white border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 font-medium"
         >
           Normal (1s)
         </button>
         <button
           onClick={() => handleSpeedChange(2000)}
-          className="p-1 rounded bg-gray-100 hover:bg-gray-200"
+          className="p-2 rounded bg-white border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 font-medium"
         >
           Slow (2s)
         </button>

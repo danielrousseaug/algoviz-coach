@@ -36,29 +36,85 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
   const positionedNodes = useMemo(() => {
     if (nodes.length === 0) return [];
     
-    const radius = Math.min(width, height) * 0.3;
+    const nodeRadius = 25;
+    const padding = 30;
+    
+    // Define strict canvas bounds
+    const minX = nodeRadius + padding;
+    const maxX = width - nodeRadius - padding;
+    const minY = nodeRadius + padding;
+    const maxY = height - nodeRadius - padding;
+    
     const centerX = width / 2;
     const centerY = height / 2;
+    const availableWidth = maxX - minX;
+    const availableHeight = maxY - minY;
     
     return nodes.map((node, index) => {
       if (node.x !== undefined && node.y !== undefined) {
-        return node;
+        // Clamp pre-positioned nodes
+        return { 
+          ...node, 
+          x: Math.max(minX, Math.min(maxX, node.x)),
+          y: Math.max(minY, Math.min(maxY, node.y))
+        };
       }
       
-      const angle = (2 * Math.PI * index) / nodes.length;
-      return {
-        ...node,
-        x: centerX + radius * Math.cos(angle),
-        y: centerY + radius * Math.sin(angle),
-      };
+      let x, y;
+      
+      if (nodes.length > 8) {
+        // Tight grid layout that guarantees fit
+        const cols = Math.ceil(Math.sqrt(nodes.length));
+        const rows = Math.ceil(nodes.length / cols);
+        const col = index % cols;
+        const row = Math.floor(index / cols);
+        
+        // Calculate cell dimensions to fit exactly within bounds
+        const cellWidth = availableWidth / cols;
+        const cellHeight = availableHeight / rows;
+        
+        x = minX + col * cellWidth + cellWidth / 2;
+        y = minY + row * cellHeight + cellHeight / 2;
+      } else {
+        // Circular layout with radius that fits
+        const maxRadius = Math.min(availableWidth, availableHeight) / 2.5; // Extra margin for safety
+        const radius = Math.max(30, maxRadius); // Minimum readable radius
+        const angle = (2 * Math.PI * index) / nodes.length;
+        
+        x = centerX + radius * Math.cos(angle);
+        y = centerY + radius * Math.sin(angle);
+      }
+      
+      // Final safety clamp - this should not be needed but ensures no overflow
+      x = Math.max(minX, Math.min(maxX, x));
+      y = Math.max(minY, Math.min(maxY, y));
+      
+      return { ...node, x, y };
     });
   }, [nodes, width, height]);
 
   const getNodeById = (id: string) => positionedNodes.find(node => node.id === id);
 
+  // Debug logging
+  if (positionedNodes.length > 0) {
+    const minX = Math.min(...positionedNodes.map(n => n.x!));
+    const maxX = Math.max(...positionedNodes.map(n => n.x!));
+    const minY = Math.min(...positionedNodes.map(n => n.y!));
+    const maxY = Math.max(...positionedNodes.map(n => n.y!));
+    console.log(`Graph bounds: width=${width}, height=${height}`);
+    console.log(`Actual node positions: x=[${minX}-${maxX}], y=[${minY}-${maxY}]`);
+  }
+
   return (
-    <div className="relative bg-gray-50 rounded-lg p-4">
-      <svg width={width} height={height} className="mx-auto">
+    <div className="relative bg-gray-50 rounded-lg p-6">
+      <div className="flex justify-center">
+        <svg 
+          width={width} 
+          height={height}
+          viewBox={`0 0 ${width} ${height}`}
+          className="border border-gray-200 rounded bg-white"
+          style={{ overflow: 'hidden' }}
+        >
         {edges.map((edge, index) => {
           const sourceNode = getNodeById(edge.source);
           const targetNode = getNodeById(edge.target);
@@ -83,15 +139,26 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
                 markerEnd="url(#arrowhead)"
               />
               {edge.weight !== undefined && (
-                <text
-                  x={(sourceNode.x + targetNode.x) / 2}
-                  y={(sourceNode.y + targetNode.y) / 2}
-                  textAnchor="middle"
-                  dy="-5"
-                  className="text-xs font-medium text-gray-600 bg-white"
-                >
-                  {edge.weight}
-                </text>
+                <g>
+                  <circle
+                    cx={(sourceNode.x + targetNode.x) / 2}
+                    cy={(sourceNode.y + targetNode.y) / 2}
+                    r="12"
+                    fill="white"
+                    stroke="#D1D5DB"
+                    strokeWidth="1"
+                  />
+                  <text
+                    x={(sourceNode.x + targetNode.x) / 2}
+                    y={(sourceNode.y + targetNode.y) / 2}
+                    textAnchor="middle"
+                    dy="0.35em"
+                    className="text-xs font-medium text-gray-600"
+                    fill="currentColor"
+                  >
+                    {edge.weight}
+                  </text>
+                </g>
               )}
             </g>
           );
@@ -118,6 +185,7 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
                 textAnchor="middle"
                 dy="0.35em"
                 className={`text-sm font-medium ${isHighlighted ? 'text-white' : 'text-gray-800'}`}
+                fill="currentColor"
               >
                 {node.label}
               </text>
@@ -131,6 +199,7 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
             x={annotation.position.x}
             y={annotation.position.y}
             className="text-sm font-medium text-gray-700"
+            fill="currentColor"
             style={annotation.style}
           >
             {annotation.text}
@@ -152,7 +221,8 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
             />
           </marker>
         </defs>
-      </svg>
+        </svg>
+      </div>
     </div>
   );
 }

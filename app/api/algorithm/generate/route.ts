@@ -8,8 +8,20 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     
     const problem = ProblemSchema.parse(body);
+    const language = body.language || 'python';
+    const apiKey = body.apiKey;
     
-    const solution = await generateAlgorithmSolution(problem);
+    if (!apiKey) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'OpenAI API key is required',
+        },
+        { status: 400 }
+      );
+    }
+    
+    const solution = await generateAlgorithmSolution(problem, language, apiKey);
     
     return NextResponse.json({
       success: true,
