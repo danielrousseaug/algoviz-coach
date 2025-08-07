@@ -19,12 +19,11 @@ interface TreeVisualizationProps {
 }
 
 export default function TreeVisualization({ step, width = 600, height = 400 }: TreeVisualizationProps) {
-  const { tree, highlights = [], annotations = [] } = useMemo(() => {
+  const { tree, highlights = [] } = useMemo(() => {
     const data = step.data || {};
     return {
       tree: (data.tree as TreeNode) || null,
       highlights: step.highlights || [],
-      annotations: step.annotations || [],
     };
   }, [step]);
 

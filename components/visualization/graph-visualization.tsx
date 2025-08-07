@@ -23,13 +23,12 @@ interface GraphVisualizationProps {
 }
 
 export default function GraphVisualization({ step, width = 600, height = 400 }: GraphVisualizationProps) {
-  const { nodes, edges, highlights = [], annotations = [] } = useMemo(() => {
+  const { nodes, edges, highlights = [] } = useMemo(() => {
     const data = step.data || {};
     return {
       nodes: (data.nodes as GraphNode[]) || [],
       edges: (data.edges as GraphEdge[]) || [],
       highlights: step.highlights || [],
-      annotations: step.annotations || [],
     };
   }, [step]);
 

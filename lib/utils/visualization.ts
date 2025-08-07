@@ -28,12 +28,12 @@ function sanitizeArrayStep(step: VisualizationStep): VisualizationStep {
   let elements: unknown[] = [];
   if (Array.isArray(data.elements)) {
     elements = data.elements;
-  } else if (Array.isArray((data as any).array)) {
-    elements = (data as any).array;
+  } else if (Array.isArray((data as Record<string, unknown>).array as unknown[])) {
+    elements = ((data as Record<string, unknown>).array as unknown[]) || [];
   } else if (typeof data === 'object' && data) {
     // Try values field as a fallback
-    if (Array.isArray((data as any).values)) {
-      elements = (data as any).values;
+    if (Array.isArray((data as Record<string, unknown>).values as unknown[])) {
+      elements = ((data as Record<string, unknown>).values as unknown[]) || [];
     }
   }
 
@@ -48,7 +48,7 @@ function sanitizeArrayStep(step: VisualizationStep): VisualizationStep {
   });
   const highlights: string[] = highlightsRaw
     .map((h) => {
-      if (typeof (h as any) === 'number') return String(h);
+      if (typeof h === 'number') return String(h);
       const idx = valueToIndex.get(String(h));
       return idx !== undefined ? String(idx) : String(h);
     })
@@ -64,40 +64,47 @@ function sanitizeArrayStep(step: VisualizationStep): VisualizationStep {
 
 function sanitizeTreeStep(step: VisualizationStep): VisualizationStep {
   const data = step.data || {};
-  let tree = (data as any).tree ?? (data as any).root ?? null;
-  if (!tree) return { ...step, type: 'custom', data, annotations: sanitizeAnnotations(step.annotations) };
+  const record = data as Record<string, unknown>;
+  const rawTree =
+    (record.tree as Record<string, unknown> | null | undefined) ??
+    (record.root as Record<string, unknown> | null | undefined) ??
+    null;
+  if (!rawTree) return { ...step, type: 'custom', data, annotations: sanitizeAnnotations(step.annotations) };
 
-  const assignIds = (node: any): any => {
+  const assignIds = (
+    node: Record<string, unknown> | null
+  ): Record<string, unknown> | null => {
     if (!node) return null;
     const id = toStringId(node.id ?? node.value ?? Math.random());
     return {
       id,
       value: node.value ?? id,
-      left: assignIds(node.left ?? node.leftChild ?? null),
-      right: assignIds(node.right ?? node.rightChild ?? null),
+      left: assignIds((node.left as Record<string, unknown> | null) ?? (node.leftChild as Record<string, unknown> | null) ?? null),
+      right: assignIds((node.right as Record<string, unknown> | null) ?? (node.rightChild as Record<string, unknown> | null) ?? null),
     };
   };
 
-  tree = assignIds(tree);
-  return { ...step, data: { tree }, annotations: sanitizeAnnotations(step.annotations) };
+  const treeWithIds = assignIds(rawTree);
+  return { ...step, data: { tree: treeWithIds }, annotations: sanitizeAnnotations(step.annotations) };
 }
 
 function sanitizeGraphStep(step: VisualizationStep): VisualizationStep {
   const data = step.data || {};
-  let nodes = Array.isArray((data as any).nodes) ? (data as any).nodes : [];
-  let edges = Array.isArray((data as any).edges) ? (data as any).edges : [];
+  const rec = data as Record<string, unknown>;
+  let nodes = Array.isArray(rec.nodes as unknown[]) ? ((rec.nodes as unknown[]) as Array<Record<string, unknown>>) : [];
+  let edges = Array.isArray(rec.edges as unknown[]) ? ((rec.edges as unknown[]) as Array<Record<string, unknown>>) : [];
 
-  nodes = nodes.map((n: any, i: number) => ({
+  nodes = nodes.map((n, i: number) => ({
     id: toStringId(n.id ?? i),
-    label: String(n.label ?? n.id ?? i),
-    x: typeof n.x === 'number' ? n.x : undefined,
-    y: typeof n.y === 'number' ? n.y : undefined,
+    label: String((n.label as unknown) ?? (n.id as unknown) ?? i),
+    x: typeof n.x === 'number' ? (n.x as number) : undefined,
+    y: typeof n.y === 'number' ? (n.y as number) : undefined,
   }));
 
-  edges = edges.map((e: any) => ({
-    source: toStringId(e.source ?? e.from),
-    target: toStringId(e.target ?? e.to),
-    weight: typeof e.weight === 'number' ? e.weight : undefined,
+  edges = edges.map((e) => ({
+    source: toStringId((e.source as unknown) ?? (e.from as unknown)),
+    target: toStringId((e.target as unknown) ?? (e.to as unknown)),
+    weight: typeof e.weight === 'number' ? (e.weight as number) : undefined,
   }));
 
   return { ...step, data: { nodes, edges }, annotations: sanitizeAnnotations(step.annotations) };
@@ -130,8 +137,8 @@ export function prepareVisualizationPlan(plan: VisualizationPlan): Visualization
   const title = plan.title || 'Visualization';
   const description = plan.description || '';
   const complexity = plan.complexity || { time: '—', space: '—' };
-  const initialState = (plan as any).initialState ?? {};
-  const finalState = (plan as any).finalState ?? {};
+  const initialState = plan.initialState ?? {};
+  const finalState = plan.finalState ?? {};
 
   return {
     title,

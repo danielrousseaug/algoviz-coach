@@ -10,7 +10,7 @@ interface ArrayVisualizationProps {
 }
 
 export default function ArrayVisualization({ step, width = 600, height = 200 }: ArrayVisualizationProps) {
-  const { elements, highlights = [], annotations = [] } = useMemo(() => {
+  const { elements, highlights = [] } = useMemo(() => {
     const data = step.data || {};
     
     // Debug logging
@@ -20,7 +20,6 @@ export default function ArrayVisualization({ step, width = 600, height = 200 }: 
     return {
       elements: Array.isArray(data.elements) ? data.elements : [],
       highlights: step.highlights || [],
-      annotations: step.annotations || [],
     };
   }, [step]);
 

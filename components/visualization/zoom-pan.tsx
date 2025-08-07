@@ -74,7 +74,7 @@ export default function ZoomPan({
     if (!el) return;
     const wheel = (evt: WheelEvent) => handleWheel(evt);
     el.addEventListener('wheel', wheel, { passive: false });
-    return () => el.removeEventListener('wheel', wheel as any);
+    return () => el.removeEventListener('wheel', wheel);
   }, [handleWheel]);
 
   return (
