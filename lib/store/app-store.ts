@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import type { Problem, AlgorithmSolution, ChatMessage } from '../schemas/visualization';
-import { getApiKey, hasApiKey, getApiKeyValid } from '../utils/api-key';
+import { hasApiKey, getApiKeyValid } from '../utils/api-key';
 
 interface AppState {
   problem: Problem | null;

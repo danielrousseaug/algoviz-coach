@@ -70,7 +70,7 @@ export default function ApiKeyModal({ isOpen, onClose }: ApiKeyModalProps) {
       } else {
         setValidationError(result.error || 'API key validation failed');
       }
-    } catch (error) {
+    } catch {
       setValidationError('Network error during validation. Please try again.');
     } finally {
       setIsValidating(false);

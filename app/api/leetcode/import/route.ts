@@ -16,7 +16,7 @@ interface LeetCodeResponse {
       }[];
     } | null;
   };
-  errors?: any[];
+  errors?: unknown[];
 }
 
 interface ParsedProblem {
@@ -49,14 +49,14 @@ function parseExamples(content: string, exampleTestcases?: string): ParsedProble
   const examples: ParsedProblem['examples'] = [];
   
   // Try to extract examples from content
-  const exampleRegex = /<strong>Example \d+:<\/strong>\s*(.*?)(?=<strong>Example \d+:|<strong>Constraints:|$)/gs;
+  const exampleRegex = /<strong>Example \d+:<\/strong>\s*(.*?)(?=<strong>Example \d+:|<strong>Constraints:|$)/gsu;
   const matches = content.match(exampleRegex);
   
   if (matches) {
-    matches.forEach((match, index) => {
-      const inputMatch = match.match(/<strong>Input:<\/strong>\s*(.*?)(?=<br|<strong>)/s);
-      const outputMatch = match.match(/<strong>Output:<\/strong>\s*(.*?)(?=<br|<strong>)/s);
-      const explanationMatch = match.match(/<strong>Explanation:<\/strong>\s*(.*?)(?=<br|<strong>|$)/s);
+    matches.forEach((match) => {
+      const inputMatch = match.match(/<strong>Input:<\/strong>\s*(.*?)(?=<br|<strong>)/su);
+      const outputMatch = match.match(/<strong>Output:<\/strong>\s*(.*?)(?=<br|<strong>)/su);
+      const explanationMatch = match.match(/<strong>Explanation:<\/strong>\s*(.*?)(?=<br|<strong>|$)/su);
       
       if (inputMatch && outputMatch) {
         examples.push({
@@ -88,10 +88,10 @@ function parseExamples(content: string, exampleTestcases?: string): ParsedProble
 function parseConstraints(content: string): string[] {
   const constraints: string[] = [];
   
-  const constraintsMatch = content.match(/<strong>Constraints:<\/strong>\s*(.*?)(?=<\/div>|$)/s);
+  const constraintsMatch = content.match(/<strong>Constraints:<\/strong>\s*(.*?)(?=<\/div>|$)/su);
   if (constraintsMatch) {
     const constraintsText = convert(constraintsMatch[1], { wordwrap: false });
-    const constraintLines = constraintsText.split('\n').filter(line => line.trim());
+    const constraintLines = constraintsText.split('\n').filter((line: string) => line.trim());
     constraints.push(...constraintLines);
   }
   
@@ -164,10 +164,8 @@ export async function POST(request: NextRequest) {
     // Parse and clean the content
     const cleanDescription = convert(question.content, {
       wordwrap: false,
-      ignoreImage: true,
-      ignoreHref: true,
       selectors: [
-        { selector: 'img', options: { ignoreImage: true } },
+        { selector: 'img', format: 'skip' },
         { selector: 'a', options: { ignoreHref: true } }
       ]
     });

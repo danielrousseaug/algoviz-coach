@@ -57,7 +57,7 @@ describe('VisualizationRenderer', () => {
       id: 'step1',
       description: 'Null data test',
       type: 'array',
-      data: null
+      data: {}
     };
 
     render(<VisualizationRenderer step={nullDataStep} />);

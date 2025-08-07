@@ -44,23 +44,27 @@ export async function POST(request: NextRequest) {
           error: 'API key validation failed: No response from OpenAI'
         }, { status: 400 });
       }
-    } catch (openaiError: any) {
+    } catch (openaiError: unknown) {
       let errorMessage = 'API key validation failed';
       
-      if (openaiError.status === 401) {
-        errorMessage = 'Invalid API key. Please check that your OpenAI API key is correct.';
-      } else if (openaiError.status === 429) {
-        errorMessage = 'Rate limit exceeded. Your API key is valid but you may have reached your usage limit.';
-      } else if (openaiError.status === 403) {
-        errorMessage = 'API key does not have access to the required models. Please check your OpenAI plan.';
-      } else if (openaiError.message) {
-        errorMessage = `OpenAI API error: ${openaiError.message}`;
+      if (openaiError && typeof openaiError === 'object' && 'status' in openaiError) {
+        const status = (openaiError as { status: number }).status;
+        if (status === 401) {
+          errorMessage = 'Invalid API key. Please check that your OpenAI API key is correct.';
+        } else if (status === 429) {
+          errorMessage = 'Rate limit exceeded. Your API key is valid but you may have reached your usage limit.';
+        } else if (status === 403) {
+          errorMessage = 'API key does not have access to the required models. Please check your OpenAI plan.';
+        }
+        if ('message' in openaiError && typeof openaiError.message === 'string') {
+          errorMessage = `OpenAI API error: ${openaiError.message}`;
+        }
       }
 
       return NextResponse.json({
         success: false,
         error: errorMessage,
-        details: openaiError.status ? `Status: ${openaiError.status}` : undefined
+        details: openaiError && typeof openaiError === 'object' && 'status' in openaiError ? `Status: ${(openaiError as { status: number }).status}` : undefined
       }, { status: 400 });
     }
   } catch (error) {
