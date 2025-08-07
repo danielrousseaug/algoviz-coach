@@ -34,23 +34,23 @@ export default function ArrayVisualization({ step, width = 600, height = 200 }: 
   // If no elements, show debug info
   if (elements.length === 0) {
     return (
-      <div className="relative bg-gray-50 rounded-lg p-4">
+      <div className="relative p-4">
         <div className="flex flex-col items-center justify-center h-32">
-          <p className="text-gray-500 mb-2">No array elements to display</p>
-          <p className="text-xs text-gray-400">Data received: {JSON.stringify(step.data, null, 2)}</p>
+          <p className="mb-2 text-muted">No array elements to display</p>
+          <p className="text-xs text-muted">Data received: {JSON.stringify(step.data, null, 2)}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative bg-gray-50 rounded-lg p-6">
+    <div className="relative p-6">
       <div className="flex justify-center">
         <svg 
           width={width} 
           height={height} 
           viewBox={`0 0 ${width} ${height}`}
-          className="border border-gray-200 rounded bg-white"
+          className="rounded text-foreground"
         >
         {elements.map((element: unknown, index: number) => {
           const x = startX + index * elementWidth;
@@ -63,7 +63,7 @@ export default function ArrayVisualization({ step, width = 600, height = 200 }: 
                 y={elementY}
                 width={elementWidth - 2}
                 height={elementHeight}
-                fill={isHighlighted ? '#3B82F6' : '#FFFFFF'}
+                fill={isHighlighted ? 'url(#nodeHighlightArray)' : '#FFFFFF'}
                 stroke={isHighlighted ? '#1D4ED8' : '#D1D5DB'}
                 strokeWidth={2}
                 rx={4}
@@ -73,7 +73,7 @@ export default function ArrayVisualization({ step, width = 600, height = 200 }: 
                 y={elementY + elementHeight / 2}
                 textAnchor="middle"
                 dy="0.35em"
-                className={`text-sm font-medium ${isHighlighted ? 'text-white' : 'text-gray-800'}`}
+                className={`text-sm font-medium ${isHighlighted ? 'text-white' : 'text-foreground'}`}
                 fill="currentColor"
               >
                 {String(element)}
@@ -82,7 +82,7 @@ export default function ArrayVisualization({ step, width = 600, height = 200 }: 
                 x={x + elementWidth / 2}
                 y={elementY + elementHeight + 18}
                 textAnchor="middle"
-                className="text-xs text-gray-500"
+                className="text-xs text-muted"
                 fill="currentColor"
               >
                 {index}
@@ -91,18 +91,13 @@ export default function ArrayVisualization({ step, width = 600, height = 200 }: 
           );
         })}
         
-        {annotations.map((annotation, index) => (
-          <g key={`annotation-${index}`}>
-            <text
-              x={annotation.position.x}
-              y={annotation.position.y}
-              className="text-sm font-medium text-gray-700"
-              style={annotation.style}
-            >
-              {annotation.text}
-            </text>
-          </g>
-        ))}
+        {/* annotations intentionally omitted to avoid duplicate description text inside the canvas */}
+        <defs>
+          <linearGradient id="nodeHighlightArray" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#22d3ee" />
+          </linearGradient>
+        </defs>
         </svg>
       </div>
     </div>

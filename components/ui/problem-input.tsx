@@ -160,19 +160,19 @@ export default function ProblemInput() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Your Algorithm Problem</h2>
+    <div className="max-w-4xl mx-auto p-6 glass rounded-2xl border card-shadow">
+      <h2 className="text-2xl font-bold mb-6">Enter Your Algorithm Problem</h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* LeetCode Import Section */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="glass border rounded-lg p-4">
           <div className="flex items-center mb-3">
-            <svg className="w-5 h-5 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.857 2.133 8.063-.074l8.705-8.217a1.125 1.125 0 0 0 .038-1.616l-2.307-2.307a1.125 1.125 0 0 0-1.616-.038l-5.773 6.024c-.381.396-1.009.396-1.391 0l-2.307-2.307a1.125 1.125 0 0 1 0-1.616l8.217-8.705c.381-.396.381-1.009 0-1.391L14.875.437A1.374 1.374 0 0 0 13.483 0z"/>
+            <svg className="w-5 h-5 text-accent mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 12h12m-6-6l6 6-6 6" />
             </svg>
-            <h3 className="text-lg font-medium text-blue-800">Quick Import from LeetCode</h3>
+            <h3 className="text-lg font-medium">Quick Import from LeetCode</h3>
           </div>
-          <p className="text-blue-700 text-sm mb-4">
+          <p className="text-sm text-muted mb-4">
             Paste a LeetCode problem URL to automatically fill in the form fields
           </p>
           <div className="flex gap-3">
@@ -181,14 +181,14 @@ export default function ProblemInput() {
               value={leetCodeUrl}
               onChange={(e) => setLeetCodeUrl(e.target.value)}
               placeholder="https://leetcode.com/problems/two-sum/"
-              className="flex-1 px-3 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+              className="flex-1 px-3 py-2 rounded-md bg-card/70 border border-white/10 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               disabled={isImporting || isLoading}
             />
             <button
               type="button"
               onClick={handleLeetCodeImport}
               disabled={isImporting || isLoading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              className="px-4 py-2 bg-primary text-white rounded-md hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-primary/40 disabled:opacity-50 disabled:cursor-not-allowed font-medium border border-white/10"
             >
               {isImporting ? 'Importing...' : 'Import'}
             </button>
@@ -196,16 +196,16 @@ export default function ProblemInput() {
         </div>
 
         <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
+          <div className="absolute inset-0 flex items-center" aria-hidden>
+            <div className="w-full border-t border-white/10" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Or enter problem details manually</span>
+            <span className="px-2 rounded bg-background text-muted">Or enter problem details manually</span>
           </div>
         </div>
 
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="title" className="block text-sm font-medium mb-2">
             Problem Title *
           </label>
           <input
@@ -213,14 +213,14 @@ export default function ProblemInput() {
             id="title"
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+            className="w-full px-3 py-2 rounded-md bg-card/70 border border-white/10 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
             placeholder="e.g., Two Sum"
             disabled={isLoading}
           />
         </div>
 
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="description" className="block text-sm font-medium mb-2">
             Problem Description *
           </label>
           <textarea
@@ -228,7 +228,7 @@ export default function ProblemInput() {
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+            className="w-full px-3 py-2 rounded-md bg-card/70 border border-white/10 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
             placeholder="Describe the problem you want to solve..."
             disabled={isLoading}
           />
@@ -236,7 +236,7 @@ export default function ProblemInput() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Difficulty Level
             </label>
             <select
@@ -245,7 +245,7 @@ export default function ProblemInput() {
                 const value = e.target.value as 'easy' | 'medium' | 'hard';
                 setFormData({ ...formData, difficulty: value });
               }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+              className="w-full px-3 py-2 rounded-md bg-card/70 text-foreground border border-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               disabled={isLoading}
             >
               <option value="easy">Easy</option>
@@ -254,13 +254,13 @@ export default function ProblemInput() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Programming Language
             </label>
             <select
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+              className="w-full px-3 py-2 rounded-md bg-card/70 text-foreground border border-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               disabled={isLoading}
             >
               <option value="python">Python</option>
@@ -275,18 +275,18 @@ export default function ProblemInput() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium mb-2">
             Examples *
           </label>
           {formData.examples.map((example, index) => (
-            <div key={index} className="mb-4 p-4 border border-gray-200 rounded-md">
+            <div key={index} className="mb-4 p-4 glass border rounded-md">
               <div className="flex justify-between items-center mb-2">
-                <h4 className="font-medium text-gray-700">Example {index + 1}</h4>
+                <h4 className="font-medium">Example {index + 1}</h4>
                 {formData.examples.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeExample(index)}
-                    className="text-red-500 hover:text-red-700 disabled:opacity-50"
+                    className="text-rose-300 hover:text-rose-200 disabled:opacity-50"
                     disabled={isLoading}
                   >
                     Remove
@@ -295,35 +295,35 @@ export default function ProblemInput() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-800 mb-1">Input</label>
+                  <label className="block text-xs font-medium mb-1">Input</label>
                   <input
                     type="text"
                     value={example.input}
                     onChange={(e) => handleExampleChange(index, 'input', e.target.value)}
-                    className="w-full px-2 py-1 border border-gray-300 rounded text-sm text-gray-900"
+                    className="w-full px-2 py-1 rounded text-sm bg-card/70 border border-white/10"
                     placeholder="e.g., [2,7,11,15], target = 9"
                     disabled={isLoading}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-800 mb-1">Output</label>
+                  <label className="block text-xs font-medium mb-1">Output</label>
                   <input
                     type="text"
                     value={example.output}
                     onChange={(e) => handleExampleChange(index, 'output', e.target.value)}
-                    className="w-full px-2 py-1 border border-gray-300 rounded text-sm text-gray-900"
+                    className="w-full px-2 py-1 rounded text-sm bg-card/70 border border-white/10"
                     placeholder="e.g., [0,1]"
                     disabled={isLoading}
                   />
                 </div>
               </div>
               <div className="mt-2">
-                <label className="block text-xs font-medium text-gray-800 mb-1">Explanation (optional)</label>
+                <label className="block text-xs font-medium mb-1">Explanation (optional)</label>
                 <input
                   type="text"
                   value={example.explanation}
                   onChange={(e) => handleExampleChange(index, 'explanation', e.target.value)}
-                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm text-gray-900"
+                  className="w-full px-2 py-1 rounded text-sm bg-card/70 border border-white/10"
                   placeholder="Explain why this output is correct..."
                   disabled={isLoading}
                 />
@@ -333,7 +333,7 @@ export default function ProblemInput() {
           <button
             type="button"
             onClick={addExample}
-            className="text-blue-500 hover:text-blue-700 text-sm disabled:opacity-50"
+            className="text-accent hover:brightness-110 text-sm disabled:opacity-50"
             disabled={isLoading}
           >
             + Add Example
@@ -341,7 +341,7 @@ export default function ProblemInput() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium mb-2">
             Constraints (optional)
           </label>
           {formData.constraints.map((constraint, index) => (
@@ -350,7 +350,7 @@ export default function ProblemInput() {
                 type="text"
                 value={constraint}
                 onChange={(e) => handleConstraintChange(index, e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900"
+                className="flex-1 px-3 py-2 rounded-md text-sm bg-card/70 border border-white/10"
                 placeholder="e.g., 1 <= nums.length <= 10^4"
                 disabled={isLoading}
               />
@@ -358,7 +358,7 @@ export default function ProblemInput() {
                 <button
                   type="button"
                   onClick={() => removeConstraint(index)}
-                  className="text-red-500 hover:text-red-700 text-sm disabled:opacity-50"
+                  className="text-rose-300 hover:text-rose-200 text-sm disabled:opacity-50"
                   disabled={isLoading}
                 >
                   Remove
@@ -369,7 +369,7 @@ export default function ProblemInput() {
           <button
             type="button"
             onClick={addConstraint}
-            className="text-blue-500 hover:text-blue-700 text-sm disabled:opacity-50"
+            className="text-accent hover:brightness-110 text-sm disabled:opacity-50"
             disabled={isLoading}
           >
             + Add Constraint
@@ -377,23 +377,23 @@ export default function ProblemInput() {
         </div>
 
         {!hasValidApiKey && (
-          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+          <div className="p-4 glass border rounded-md">
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="h-5 w-5 text-yellow-300" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-yellow-800">API Key Required</h3>
-                <div className="mt-1 text-sm text-yellow-700">
+                <h3 className="text-sm font-medium">API Key Required</h3>
+                <div className="mt-1 text-sm text-muted">
                   <p>You need to add your OpenAI API key to generate algorithm solutions.</p>
                 </div>
                 <div className="mt-3">
                   <button
                     type="button"
                     onClick={() => setApiKeyModalOpen(true)}
-                    className="text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-1 rounded-md font-medium"
+                    className="text-sm glass border hover:bg-white/10 px-3 py-1 rounded-md font-medium"
                   >
                     Add API Key
                   </button>
@@ -404,7 +404,7 @@ export default function ProblemInput() {
         )}
 
         {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+          <div className="p-3 glass border rounded-md text-rose-300 text-sm">
             {error}
           </div>
         )}
@@ -412,7 +412,7 @@ export default function ProblemInput() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+          className="w-full bg-primary text-white py-3 px-4 rounded-md hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-primary/40 disabled:opacity-50 disabled:cursor-not-allowed font-medium border border-white/10"
         >
           {isLoading ? 'Generating Solution...' : 'Generate Algorithm Solution'}
         </button>

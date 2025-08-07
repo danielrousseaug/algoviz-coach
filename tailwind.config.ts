@@ -11,6 +11,11 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        card: "var(--card)",
+        muted: "var(--muted)",
+        primary: "var(--primary)",
+        accent: "var(--accent)",
+        border: "var(--border)",
       },
     },
   },

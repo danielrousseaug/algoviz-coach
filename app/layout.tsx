@@ -34,11 +34,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
+        <div className="relative min-h-screen">
+          {/* top gradient accent */}
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-gradient-to-b from-accent/25 to-transparent blur-2xl" />
+          {/* page chrome */}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+        </div>
       </body>
     </html>
   );

@@ -10,7 +10,7 @@ interface FallbackVisualizationProps {
 
 export default function FallbackVisualization({ step, height = 300 }: FallbackVisualizationProps) {
   return (
-    <div className="relative bg-gray-50 rounded-lg p-4">
+    <div className="relative glass rounded-lg p-4 border">
       <div className="flex flex-col items-center justify-center" style={{ height: height - 32 }}>
         <div className="text-center max-w-md">
           <div className="mb-4">
@@ -19,17 +19,17 @@ export default function FallbackVisualization({ step, height = 300 }: FallbackVi
             </svg>
           </div>
           
-          <h3 className="text-lg font-medium text-gray-700 mb-4">Visualization Preview</h3>
+          <h3 className="text-lg font-medium mb-4">Visualization Preview</h3>
           
-          <div className="bg-white rounded-lg p-4 border border-gray-200 text-left">
-            <h4 className="font-medium text-gray-700 mb-2">Step Data:</h4>
-            <pre className="text-xs text-gray-600 overflow-auto max-h-32">
+          <div className="glass rounded-lg p-4 border text-left">
+            <h4 className="font-medium mb-2">Step Data:</h4>
+            <pre className="text-xs text-muted overflow-auto max-h-32">
               {JSON.stringify(step.data, null, 2)}
             </pre>
           </div>
           
           <div className="mt-4">
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted">
               This visualization type ({step.type}) needs proper data formatting
             </p>
           </div>

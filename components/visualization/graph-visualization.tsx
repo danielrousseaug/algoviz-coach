@@ -36,8 +36,8 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
   const positionedNodes = useMemo(() => {
     if (nodes.length === 0) return [];
     
-    const nodeRadius = 25;
-    const padding = 30;
+    const nodeRadius = 22;
+    const padding = 32;
     
     // Define strict canvas bounds
     const minX = nodeRadius + padding;
@@ -70,15 +70,15 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
         const row = Math.floor(index / cols);
         
         // Calculate cell dimensions to fit exactly within bounds
-        const cellWidth = availableWidth / cols;
-        const cellHeight = availableHeight / rows;
+        const cellWidth = Math.max(nodeRadius * 2.5, availableWidth / cols);
+        const cellHeight = Math.max(nodeRadius * 2.5, availableHeight / rows);
         
         x = minX + col * cellWidth + cellWidth / 2;
         y = minY + row * cellHeight + cellHeight / 2;
       } else {
-        // Circular layout with radius that fits
-        const maxRadius = Math.min(availableWidth, availableHeight) / 2.5; // Extra margin for safety
-        const radius = Math.max(30, maxRadius); // Minimum readable radius
+        // Circular layout with radius that fits and extra inner margin
+        const maxRadius = Math.min(availableWidth, availableHeight) / 2.8;
+        const radius = Math.max(50, maxRadius);
         const angle = (2 * Math.PI * index) / nodes.length;
         
         x = centerX + radius * Math.cos(angle);
@@ -106,15 +106,26 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
   }
 
   return (
-    <div className="relative bg-gray-50 rounded-lg p-6">
+    <div className="relative p-6">
       <div className="flex justify-center">
         <svg 
           width={width} 
           height={height}
           viewBox={`0 0 ${width} ${height}`}
-          className="border border-gray-200 rounded bg-white"
+          className="rounded text-foreground"
           style={{ overflow: 'hidden' }}
         >
+        {/* clip-path ensures edges/nodes never render outside the frame */}
+        <defs>
+          <clipPath id="frameClip">
+            <rect x="0" y="0" width={width} height={height} rx="8" ry="8" />
+          </clipPath>
+          <linearGradient id="nodeHighlightGraph" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#22d3ee" />
+          </linearGradient>
+        </defs>
+        <g clipPath="url(#frameClip)">
         {edges.map((edge, index) => {
           const sourceNode = getNodeById(edge.source);
           const targetNode = getNodeById(edge.target);
@@ -129,12 +140,12 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
           
           return (
             <g key={`edge-${index}`}>
-              <line
+               <line
                 x1={sourceNode.x}
                 y1={sourceNode.y}
                 x2={targetNode.x}
                 y2={targetNode.y}
-                stroke={isHighlighted ? '#3B82F6' : '#6B7280'}
+                 stroke={isHighlighted ? 'url(#nodeHighlightGraph)' : '#6B7280'}
                 strokeWidth={isHighlighted ? 3 : 2}
                 markerEnd="url(#arrowhead)"
               />
@@ -175,7 +186,7 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
                 cx={node.x}
                 cy={node.y}
                 r={25}
-                fill={isHighlighted ? '#3B82F6' : '#FFFFFF'}
+                fill={isHighlighted ? 'url(#nodeHighlightGraph)' : '#FFFFFF'}
                 stroke={isHighlighted ? '#1D4ED8' : '#D1D5DB'}
                 strokeWidth={2}
               />
@@ -184,7 +195,7 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
                 y={node.y}
                 textAnchor="middle"
                 dy="0.35em"
-                className={`text-sm font-medium ${isHighlighted ? 'text-white' : 'text-gray-800'}`}
+                className={`text-sm font-medium ${isHighlighted ? 'text-white' : 'text-foreground'}`}
                 fill="currentColor"
               >
                 {node.label}
@@ -192,19 +203,8 @@ export default function GraphVisualization({ step, width = 600, height = 400 }: 
             </g>
           );
         })}
-        
-        {annotations.map((annotation, index) => (
-          <text
-            key={`annotation-${index}`}
-            x={annotation.position.x}
-            y={annotation.position.y}
-            className="text-sm font-medium text-gray-700"
-            fill="currentColor"
-            style={annotation.style}
-          >
-            {annotation.text}
-          </text>
-        ))}
+        </g>
+        {/* annotations intentionally omitted to avoid duplicate description text inside the canvas */}
         
         <defs>
           <marker

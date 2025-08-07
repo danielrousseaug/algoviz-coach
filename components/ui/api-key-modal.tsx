@@ -90,18 +90,18 @@ export default function ApiKeyModal({ isOpen, onClose }: ApiKeyModalProps) {
   const existingKey = getApiKey();
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 shadow-2xl">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+      <div className="glass rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 border card-shadow">
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-            <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-gradient-to-br from-primary/30 to-accent/30 ring-1 ring-white/10">
+            <svg className="w-8 h-8 text-accent" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clipRule="evenodd" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold mb-2">
             {existingKey ? 'Manage API Key' : 'Setup OpenAI API Key'}
           </h2>
-          <p className="text-gray-600 text-sm">
+          <p className="text-muted text-sm">
             {existingKey 
               ? 'Update or remove your OpenAI API key' 
               : 'Enter your OpenAI API key to start generating algorithm solutions'
@@ -110,15 +110,15 @@ export default function ApiKeyModal({ isOpen, onClose }: ApiKeyModalProps) {
         </div>
 
         {existingKey && (
-          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <div className="mb-4 p-3 rounded-lg glass border">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-green-800 font-medium">Current API Key</p>
-                <p className="text-sm text-green-600">{maskApiKey(existingKey)}</p>
+                <p className="text-sm font-medium">Current API Key</p>
+                <p className="text-sm text-muted">{maskApiKey(existingKey)}</p>
               </div>
               <button
                 onClick={handleRemoveApiKey}
-                className="text-red-600 hover:text-red-800 text-sm font-medium"
+                className="text-rose-300 hover:text-rose-200 text-sm font-medium"
               >
                 Remove
               </button>
@@ -128,7 +128,7 @@ export default function ApiKeyModal({ isOpen, onClose }: ApiKeyModalProps) {
 
         <div className="space-y-4">
           <div>
-            <label htmlFor="apiKey" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="apiKey" className="block text-sm font-medium mb-2">
               OpenAI API Key
             </label>
             <div className="relative">
@@ -138,15 +138,15 @@ export default function ApiKeyModal({ isOpen, onClose }: ApiKeyModalProps) {
                 value={apiKeyInput}
                 onChange={(e) => setApiKeyInput(e.target.value)}
                 placeholder="sk-..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 pr-10"
+                className="w-full px-3 py-2 rounded-md bg-card/70 border border-white/10 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent pr-10"
                 disabled={isValidating}
               />
               <button
                 type="button"
                 onClick={() => setShowApiKey(!showApiKey)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted hover:text-foreground"
               >
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {showApiKey ? (
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L8.464 8.464m1.414 1.414L18.16 18.16" />
                   ) : (
@@ -157,7 +157,7 @@ export default function ApiKeyModal({ isOpen, onClose }: ApiKeyModalProps) {
             </div>
           </div>
 
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-muted">
             <p>🔐 Your API key is stored securely in your browser cookies and never sent to our servers.</p>
             <p className="mt-1">
               Get your API key from: 
@@ -165,7 +165,7 @@ export default function ApiKeyModal({ isOpen, onClose }: ApiKeyModalProps) {
                 href="https://platform.openai.com/api-keys" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 ml-1"
+                className="text-accent hover:brightness-110 ml-1"
               >
                 OpenAI Platform →
               </a>
@@ -173,21 +173,19 @@ export default function ApiKeyModal({ isOpen, onClose }: ApiKeyModalProps) {
           </div>
 
           {validationError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+            <div className="p-3 glass border rounded-md text-rose-300 text-sm">
               {validationError}
             </div>
           )}
 
           {validationSuccess && (
-            <div className="p-3 bg-green-50 border border-green-200 rounded-md text-green-700 text-sm">
-              ✅ {validationSuccess}
-            </div>
+            <div className="p-3 glass border rounded-md text-emerald-300 text-sm">✅ {validationSuccess}</div>
           )}
 
           <div className="flex space-x-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="flex-1 px-4 py-2 rounded-md glass border hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-primary/40"
               disabled={isValidating}
             >
               {existingKey ? 'Close' : 'Cancel'}
@@ -195,7 +193,7 @@ export default function ApiKeyModal({ isOpen, onClose }: ApiKeyModalProps) {
             <button
               onClick={handleValidateApiKey}
               disabled={isValidating || !apiKeyInput.trim()}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 bg-primary text-white rounded-md hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-primary/40 disabled:opacity-50 disabled:cursor-not-allowed border border-white/10"
             >
               {isValidating ? 'Validating...' : 'Validate & Save'}
             </button>

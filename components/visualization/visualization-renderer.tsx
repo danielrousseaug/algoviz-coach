@@ -27,7 +27,6 @@ export default function VisualizationRenderer({ step, width, height }: Visualiza
     try {
       // Check if step has proper data
       if (!step.data || Object.keys(step.data).length === 0) {
-        console.log('No data found for step, using fallback:', step);
         return <FallbackVisualization step={step} width={width} height={height} />;
       }
 
@@ -35,7 +34,6 @@ export default function VisualizationRenderer({ step, width, height }: Visualiza
         case 'array':
           // Check if array data is properly formatted
           if (!step.data.elements || !Array.isArray(step.data.elements)) {
-            console.log('Invalid array data, using fallback:', step.data);
             return <FallbackVisualization step={step} width={width} height={height} />;
           }
           return <ArrayVisualization step={step} width={width} height={height} />;

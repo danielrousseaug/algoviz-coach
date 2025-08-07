@@ -28,22 +28,35 @@ export default function TreeVisualization({ step, width = 600, height = 400 }: T
     };
   }, [step]);
 
-  const calculatePositions = useCallback((node: TreeNode | null, x: number, y: number, level: number): TreeNode | null => {
-    if (!node) return null;
-    
-    const levelWidth = width / Math.pow(2, level + 1);
-    
-    return {
-      ...node,
-      x,
-      y,
-      left: node.left ? calculatePositions(node.left, x - levelWidth, y + 80, level + 1) : null,
-      right: node.right ? calculatePositions(node.right, x + levelWidth, y + 80, level + 1) : null,
-    };
-  }, [width]);
+  const calculatePositions = useCallback(
+    (node: TreeNode | null, x: number, y: number, level: number): TreeNode | null => {
+      if (!node) return null;
+
+      const nodeRadius = 20;
+      const margin = nodeRadius + 12; // keep nodes safely inside canvas
+      const availableWidth = Math.max(100, width - margin * 2);
+      const levelWidth = availableWidth / Math.pow(2, level + 1);
+
+      const clampedX = Math.max(margin, Math.min(width - margin, x));
+      const clampedY = Math.max(nodeRadius + 10, Math.min(height - nodeRadius - 10, y));
+
+      return {
+        ...node,
+        x: clampedX,
+        y: clampedY,
+        left: node.left
+          ? calculatePositions(node.left, clampedX - levelWidth, clampedY + 80, level + 1)
+          : null,
+        right: node.right
+          ? calculatePositions(node.right, clampedX + levelWidth, clampedY + 80, level + 1)
+          : null,
+      };
+    },
+    [width, height]
+  );
 
   const positionedTree = useMemo(() => {
-    return tree ? calculatePositions(tree, width / 2, 50, 0) : null;
+    return tree ? calculatePositions(tree, width / 2, 40, 0) : null;
   }, [tree, width, calculatePositions]);
 
   const renderConnections = (node: TreeNode | null): React.JSX.Element[] => {
@@ -96,7 +109,7 @@ export default function TreeVisualization({ step, width = 600, height = 400 }: T
           cx={node.x}
           cy={node.y}
           r={20}
-          fill={isHighlighted ? '#3B82F6' : '#FFFFFF'}
+          fill={isHighlighted ? 'url(#nodeHighlight)' : '#FFFFFF'}
           stroke={isHighlighted ? '#1D4ED8' : '#D1D5DB'}
           strokeWidth={2}
         />
@@ -105,7 +118,7 @@ export default function TreeVisualization({ step, width = 600, height = 400 }: T
           y={node.y}
           textAnchor="middle"
           dy="0.35em"
-          className={`text-sm font-medium ${isHighlighted ? 'text-white' : 'text-gray-800'}`}
+          className={`text-sm font-medium ${isHighlighted ? 'text-white' : 'text-foreground'}`}
         >
           {String(node.value)}
         </text>
@@ -124,26 +137,21 @@ export default function TreeVisualization({ step, width = 600, height = 400 }: T
   };
 
   return (
-    <div className="relative bg-gray-50 rounded-lg p-4">
-      <svg width={width} height={height} className="mx-auto">
+    <div className="relative p-4">
+      <svg width={width} height={height} className="mx-auto text-foreground rounded">
+        <defs>
+          <linearGradient id="nodeHighlight" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#22d3ee" />
+          </linearGradient>
+        </defs>
         {positionedTree && (
           <>
             {renderConnections(positionedTree)}
             {renderNodes(positionedTree)}
           </>
         )}
-        
-        {annotations.map((annotation, index) => (
-          <text
-            key={`annotation-${index}`}
-            x={annotation.position.x}
-            y={annotation.position.y}
-            className="text-sm font-medium text-gray-700"
-            style={annotation.style}
-          >
-            {annotation.text}
-          </text>
-        ))}
+        {/* annotations intentionally omitted to avoid duplicate text; description is shown above */}
       </svg>
     </div>
   );

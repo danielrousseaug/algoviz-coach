@@ -45,15 +45,15 @@ export default function LoadingSolution({ isVisible }: LoadingSolutionProps) {
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center"
+      className="fixed inset-0 bg-black/70 flex items-center justify-center"
       style={{ zIndex: 10000 }}
     >
-      <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl">
+      <div className="glass rounded-2xl p-8 max-w-md w-full mx-4 border card-shadow">
         <div className="text-center">
           {/* Spinning icon */}
           <div className="mb-6">
             <svg 
-              className="animate-spin h-12 w-12 text-blue-600 mx-auto"
+              className="animate-spin h-12 w-12 text-accent mx-auto"
               fill="none" 
               viewBox="0 0 24 24"
             >
@@ -73,11 +73,11 @@ export default function LoadingSolution({ isVisible }: LoadingSolutionProps) {
             </svg>
           </div>
 
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-bold mb-2">
             Generating Solution
           </h2>
           
-          <p className="text-lg text-blue-600 font-medium mb-6">
+          <p className="text-lg text-accent font-medium mb-6">
             {LOADING_STEPS[currentStep]}{dots}
           </p>
 
@@ -85,15 +85,15 @@ export default function LoadingSolution({ isVisible }: LoadingSolutionProps) {
             {LOADING_STEPS.map((step, index) => (
               <div key={index} className="flex items-center text-sm">
                 <div className={`w-2 h-2 rounded-full mr-3 ${
-                  index <= currentStep ? 'bg-green-500' : 'bg-gray-300'
+                  index <= currentStep ? 'bg-emerald-400' : 'bg-white/20'
                 }`} />
                 <span className={`${
-                  index <= currentStep ? 'text-green-700' : 'text-gray-500'
+                  index <= currentStep ? 'text-emerald-200' : 'text-muted'
                 }`}>
                   {step.replace('...', '')}
                 </span>
                 {index === currentStep && (
-                  <span className="ml-1 text-blue-600">{dots}</span>
+                  <span className="ml-1 text-accent">{dots}</span>
                 )}
               </div>
             ))}

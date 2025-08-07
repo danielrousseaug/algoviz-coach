@@ -49,10 +49,10 @@ export default function VisualizationControls() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 space-y-4">
+    <div className="glass rounded-xl border card-shadow p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-800">Visualization Controls</h3>
-        <div className="text-sm text-gray-500">
+        <h3 className="text-lg font-semibold">Visualization Controls</h3>
+        <div className="text-sm text-muted">
           Step {currentVisualizationStep + 1} of {totalSteps}
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function VisualizationControls() {
         <button
           onClick={() => handleStepChange(currentVisualizationStep - 1)}
           disabled={currentVisualizationStep === 0}
-          className="p-2 rounded-md bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700"
+          className="p-2 rounded-md glass border hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
           title="Previous step"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,7 +71,7 @@ export default function VisualizationControls() {
 
         <button
           onClick={handlePlay}
-          className="p-2 rounded-md bg-blue-500 hover:bg-blue-600 text-white"
+          className="p-2 rounded-md bg-primary hover:brightness-110 text-white border border-white/10"
           title={isVisualizationPlaying ? "Pause" : "Play"}
         >
           {isVisualizationPlaying ? (
@@ -88,7 +88,7 @@ export default function VisualizationControls() {
         <button
           onClick={() => handleStepChange(currentVisualizationStep + 1)}
           disabled={currentVisualizationStep >= totalSteps - 1}
-          className="p-2 rounded-md bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700"
+          className="p-2 rounded-md glass border hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
           title="Next step"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,7 +98,7 @@ export default function VisualizationControls() {
 
         <button
           onClick={handleReset}
-          className="p-2 rounded-md bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700"
+          className="p-2 rounded-md glass border hover:bg-white/10"
           title="Reset to beginning"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,10 +109,10 @@ export default function VisualizationControls() {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label htmlFor="step-slider" className="text-sm font-medium text-gray-700">
+          <label htmlFor="step-slider" className="text-sm font-medium">
             Step
           </label>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-muted">
             {solution.visualizationPlan.steps[currentVisualizationStep]?.description || 'No description'}
           </span>
         </div>
@@ -123,16 +123,16 @@ export default function VisualizationControls() {
           max={totalSteps - 1}
           value={currentVisualizationStep}
           onChange={(e) => handleStepChange(parseInt(e.target.value))}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+          className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer slider"
         />
       </div>
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label htmlFor="speed-slider" className="text-sm font-medium text-gray-700">
+          <label htmlFor="speed-slider" className="text-sm font-medium">
             Animation Speed
           </label>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-muted">
             {visualizationSpeed}ms
           </span>
         </div>
@@ -144,26 +144,26 @@ export default function VisualizationControls() {
           step={100}
           value={visualizationSpeed}
           onChange={(e) => handleSpeedChange(parseInt(e.target.value))}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+          className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer slider"
         />
       </div>
 
       <div className="grid grid-cols-3 gap-2 text-xs">
         <button
           onClick={() => handleSpeedChange(500)}
-          className="p-2 rounded bg-white border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 font-medium"
+          className="p-2 rounded glass border hover:bg-white/10 font-medium"
         >
           Fast (500ms)
         </button>
         <button
           onClick={() => handleSpeedChange(1000)}
-          className="p-2 rounded bg-white border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 font-medium"
+          className="p-2 rounded glass border hover:bg-white/10 font-medium"
         >
           Normal (1s)
         </button>
         <button
           onClick={() => handleSpeedChange(2000)}
-          className="p-2 rounded bg-white border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 font-medium"
+          className="p-2 rounded glass border hover:bg-white/10 font-medium"
         >
           Slow (2s)
         </button>

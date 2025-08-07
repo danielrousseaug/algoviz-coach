@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import type { Problem, AlgorithmSolution, ChatMessage } from '../schemas/visualization';
 import { hasApiKey, getApiKeyValid } from '../utils/api-key';
+import { prepareVisualizationPlan } from '../utils/visualization';
 
 interface AppState {
   problem: Problem | null;
@@ -65,7 +66,10 @@ export const useAppStore = create<AppState>()(
         setProblem: (problem) => set({ problem, solution: null, error: null }),
         
         setSolution: (solution) => set({ 
-          solution, 
+          solution: {
+            ...solution,
+            visualizationPlan: prepareVisualizationPlan(solution.visualizationPlan),
+          },
           error: null,
           currentVisualizationStep: 0,
         }),
@@ -87,11 +91,11 @@ export const useAppStore = create<AppState>()(
           const isValid = hasKey && getApiKeyValid();
           set({ 
             hasValidApiKey: isValid,
-            isApiKeyModalOpen: !hasKey // Open modal if no API key
+            isApiKeyModalOpen: !hasKey && !isValid // Open only if completely missing
           });
         },
         
-        setHasValidApiKey: (hasValidApiKey) => set({ hasValidApiKey }),
+        setHasValidApiKey: (hasValidApiKey) => set({ hasValidApiKey, isApiKeyModalOpen: false }),
         
         setApiKeyModalOpen: (isApiKeyModalOpen) => set({ isApiKeyModalOpen }),
         
@@ -128,7 +132,13 @@ export const useAppStore = create<AppState>()(
           isVisualizationPlaying: false,
         }),
         
-        reset: () => set(initialState),
+        reset: () => set((state) => ({
+          ...initialState,
+          // persist user choices and key status
+          selectedLanguage: state.selectedLanguage,
+          hasValidApiKey: state.hasValidApiKey,
+          isApiKeyModalOpen: false,
+        })),
       }),
       {
         name: 'algoviz-coach-storage',
@@ -138,6 +148,7 @@ export const useAppStore = create<AppState>()(
           chatMessages: state.chatMessages,
           selectedLanguage: state.selectedLanguage,
           visualizationSpeed: state.visualizationSpeed,
+          hasValidApiKey: state.hasValidApiKey,
         }),
       }
     ),
